@@ -10,7 +10,8 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var storage = multer.memoryStorage();
 var upload = multer({ storage: storage });
-
+var Image = require('./models/image.js');
+var awsUpload = require('./lib/aws-upload.js');
 
 var app = express();
 
@@ -19,6 +20,31 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.get('/images', function(req, res, next){
+  // first arg is a criteria, 2nd is a projection
+  Image.find({}, {__v: 0}, function(err, images){
+    if (err) {
+      next(err);
+      return;
+    }
+    res.json(images);
+  });
+});
+
+// upload.single('file') adds this property to the req
+app.post('/images', upload.single('file'), function(req, res, next){
+  // res.json({body: req.body.caption, file: req.file.originalname});
+  awsUpload(req.file.buffer, req.body.caption, function(err){
+    if (err) {
+      next(err);
+      return;
+    }
+  // Image.db.close();
+  });
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -6,5 +6,13 @@
   <script src="index.js" type="text/javascript" charset="utf-8" defer></script>
 </head>
 <body>
+  <form id="upload-form" enctype="multipart/form-data">
+    <label for="caption">Caption</label>
+    <input type="text" name="caption" value="" placeholder="caption" id="caption">
+    <label for="file">File</label>
+    <input type="file" name="file" value="" placeholder="file" id="file">
+    <input type="button" name="" value="upload" id="upload">
+  </form>
+  <textarea id="result"></textarea>
 </body>
 </html>
